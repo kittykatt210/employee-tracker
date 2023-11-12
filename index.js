@@ -30,7 +30,7 @@ function init() {
                 addEmployee();
                 break;
             case 'Update Employee Role':
-                updateEmployee();
+                updateEmployeeRole();
                 break;      
             case 'Delete Department':
                 deleteDept();
@@ -118,8 +118,118 @@ function addDepartment() {
     })
 };
 
+function addRole() {
+    db.query(`SELECT name FROM department`, function (err, results) {
+        if (err) throw err;
+        let deptName = [];
+        results.forEach((department) => {
+            deptName.push(department.name);
+        });
+        inquirer.prompt ([
+            {
+                type: 'input',
+                message: 'What is the name of the role?',
+                name: 'role'
+            },
+            {
+                type: 'input',
+                message: 'What is the salary of the role?',
+                name: 'salary'
+            },
+            {
+                type: 'list',
+                message: 'Which department does the role belong to?',
+                choices: deptName,
+                name: 'dept'
+            }
+        ]).then( answer => {
+            db.query(`SELECT id FROM department WHERE name = ?`, answer.dept, function (err, results) {
+                if (err) throw err;
+                let deptID = results[0].id;
+            db.query(
+                `INSERT INTO role (title, salary, department_id)
+                VALUES (?, ?, ?)`, [answer.role, answer.salary, deptID], (err, results) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.log(`\nAdded ${answer.role} to the database.\n`)
+                    init();
+                }
+            )
+            });
+        })
+    })
+};
+
+function addEmployee() {
+    db.query(`SELECT title FROM role`, function (err, results) {
+        if (err) throw err;
+        let empRole = [];
+        results.forEach((role) => {
+            empRole.push(role.title);
+        });  
+
+    db.query(`SELECT CONCAT(first_name, ' ', last_name) as manager FROM employee`, function (err, results) {
+        if (err) throw err;
+        let managerName = [];
+        results.forEach((name) => {
+            managerName.push(name.manager);
+        });  
+   
+        inquirer.prompt ([
+            {
+                type: 'input',
+                message: 'What is the employee\'s first name?',
+                name: 'fName'
+            },
+            {
+                type: 'input',
+                message: 'What is the employee\'s last name?',
+                name: 'lName'
+            },
+            {
+                type: 'list',
+                message: 'What is the employee\'s role?',
+                choices: empRole,
+                name: 'role'
+            },
+            {
+                type: 'list',
+                message: 'Who is the employee\'s manager?',
+                choices: managerName,
+                name: 'manager'
+            }
+        ]).then( answer => {
+            db.query(`SELECT id FROM role WHERE title = ?`, answer.role, function (err, results) {
+                if (err) throw err;
+                let roleID = results[0].id;
+
+            const managerNm = answer.manager.split(' ');
+            db.query(`SELECT id FROM employee WHERE first_name = ? AND last_name = ?`, [managerNm[0], managerNm[1]], function (err, results) {
+                if (err) throw err;
+                let managerID = results[0].id;
+            
+            db.query(
+                `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                VALUES (?, ?, ?, ?)`, [answer.fName, answer.lName, roleID, managerID], (err, results) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.log(`\nAdded ${answer.fName} ${answer.lName} to the database.\n`);
+                    init();
+                }
+            )
+            })
+            });
+        })
+    })
+})
+};
 
 // Functions to update data
+function updateEmployeeRole() {
+
+};
 
 // Functions to delete data
 function deleteDept() {
