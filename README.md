@@ -10,3 +10,14 @@ https://stackoverflow.com/questions/11427300/self-join-to-get-employee-manager-n
 https://www.npmjs.com/package/console.table
 
 
+https://www.w3schools.com/jsref/jsref_split.asp
+
+
+https://www.npmjs.com/package/dotenv
+
+
+https://www.w3schools.com/nodejs/nodejs_mysql_select.asp
+
+
+
+
