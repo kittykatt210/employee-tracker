@@ -9,7 +9,7 @@ const selection = ['View All Departments',
                     'Add Department', 
                     'Add Role', 
                     'Add Employee', 
-                    'Update Employee Role', 
+                    'Update Employee Role',
                     'Delete Department', 
                     'Delete Role', 
                     'Delete Employee', 
@@ -44,7 +44,7 @@ function init() {
                 break;
             case 'Update Employee Role':
                 updateEmployeeRole();
-                break;      
+                break;    
             case 'Delete Department':
                 deleteDept();
                 break;
